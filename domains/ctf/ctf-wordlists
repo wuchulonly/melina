@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly root=/opt/ctf/share/wordlists
+case "${1:-}" in
+    '')
+        printf 'Web small:  %s/web-small.txt\nWeb common: %s/web-common.txt\nDirsearch:  %s/dirsearch.txt (dirsearch %%EXT%% syntax)\nPasswords:  %s/rockyou.txt\n' "$root" "$root" "$root" "$root"
+        ;;
+    web-small|web-common|dirsearch|rockyou) printf '%s/%s.txt\n' "$root" "$1" ;;
+    *) printf 'Usage: ctf-wordlists [web-small|web-common|dirsearch|rockyou]\n' >&2; exit 2 ;;
+esac

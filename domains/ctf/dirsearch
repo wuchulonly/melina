@@ -1,0 +1,4 @@
+#!/bin/sh
+# Kali owns dirsearch and its dependencies in the system interpreter. PATH may
+# select the isolated analysis venv, which deliberately lacks those packages.
+exec /usr/bin/python3 /usr/lib/python3/dist-packages/dirsearch/dirsearch.py "$@"

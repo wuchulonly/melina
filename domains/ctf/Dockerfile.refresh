@@ -1,0 +1,26 @@
+ARG CTF_SEED
+FROM ${CTF_SEED}
+RUN rm -f /opt/ctf/share/wordlists/web-small.txt
+COPY --chmod=644 wordlists/web-small.txt /opt/ctf/share/wordlists/web-small.txt
+COPY toolchain.lock.json analysis-requirements.txt provenance.json update-tools.py check-supplement.py check-protocols.py capabilities.json check-capabilities.py /opt/ctf/
+RUN apt-get update && apt-get install -y --no-install-recommends time traceroute \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY --chmod=755 ctf-check /usr/local/bin/ctf-check
+COPY nuclei.yaml /opt/ctf/nuclei.yaml
+RUN rm -rf /opt/ctf/share/nuclei-custom
+COPY nuclei-custom/ /opt/ctf/share/nuclei-custom/
+COPY --chmod=755 ctf-python /usr/local/bin/ctf-python
+COPY --chmod=755 check-offline-python.sh /opt/ctf/check-offline-python.sh
+COPY --chmod=755 ctf-wordlists jdwp-shellifier hashcat analyzeHeadless jwt_tool nuclei /usr/local/bin/
+COPY --chmod=755 dirsearch /usr/bin/dirsearch
+COPY --chmod=755 check-reversing.sh /opt/ctf/check-reversing.sh
+COPY profile.sh /etc/profile.d/ctf.sh
+ENV GRADIO_ALLOW_FLAGGING=never CTF_REFERENCE=/melina/ctf/README.md NMAP_UNPRIVILEGED=1
+# 参考目录随源码替换，避免增量镜像保留已经删除的手册。
+RUN rm -rf /melina/ctf /king/ctf \
+    && git config --system user.name Melina \
+    && git config --system user.email melina@localhost \
+    && mkdir -p /workspace /melina/artifacts /melina/materials /melina/logs \
+    && install -d -m 1777 /tmp /var/tmp
+COPY reference/ /melina/ctf/
+RUN /usr/bin/python3 /opt/ctf/update-tools.py && ctf-check

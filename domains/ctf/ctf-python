@@ -1,0 +1,90 @@
+#!/usr/bin/python3
+"""运行或离线创建指定版本的分析环境，不改变 Melina 的默认解释器。"""
+
+import argparse
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+ROOT = Path('/opt/ctf')
+
+
+def main():
+    environments = json.loads((ROOT / 'python-environments.json').read_text())
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest='operation', required=True)
+    commands.add_parser('list', help='列出离线环境和包版本')
+    for operation, help_text in (
+        ('run', '用预装的解释器运行 Python 参数'),
+        ('source', '输出包的本地源码目录'),
+        ('create', '从随镜像提供的 wheel 创建可写 venv'),
+    ):
+        command = commands.add_parser(operation, help=help_text)
+        command.add_argument('environment', choices=sorted(environments))
+        if operation == 'run':
+            command.add_argument('arguments', nargs=argparse.REMAINDER)
+        elif operation == 'create':
+            command.add_argument('destination', type=Path)
+    args = parser.parse_args()
+    if args.operation == 'list':
+        print(json.dumps(environments, ensure_ascii=False, indent=2))
+        return
+    environment = environments[args.environment]
+    installed = ROOT / 'envs' / environment['directory']
+    cache = Path(os.environ.get('XDG_CACHE_HOME', str(Path.home() / '.cache')))
+    os.environ.update({
+        'GRADIO_ANALYTICS_ENABLED': 'False',
+        # Gradio 4.12 uses GRADIO_ALLOW_FLAGGING; its manual default writes ./flagged.
+        'GRADIO_ALLOW_FLAGGING': os.environ.get('GRADIO_ALLOW_FLAGGING', 'never'),
+        'HF_HUB_OFFLINE': '1',
+        'HF_HUB_DISABLE_TELEMETRY': '1',
+        'PYTHONDONTWRITEBYTECODE': '1',
+        'XDG_CACHE_HOME': str(cache),
+        'MPLCONFIGDIR': os.environ.get('MPLCONFIGDIR', str(cache / 'matplotlib')),
+        'GRADIO_TEMP_DIR': os.environ.get('GRADIO_TEMP_DIR', str(cache / 'gradio')),
+    })
+    if args.operation == 'run':
+        interpreter = installed / 'bin/python'
+        os.execv(interpreter, [str(interpreter), *args.arguments])
+    if args.operation == 'source':
+        source = installed / 'lib/python3.11/site-packages' / environment['package']
+        if not source.is_dir():
+            parser.error(f'预装源码不存在：{source}')
+        print(source)
+        return
+    destination = args.destination
+    if not destination.is_absolute():
+        parser.error('目标须是工作区或 HOME 下的绝对路径')
+    destination = destination.resolve()
+    roots = (Path('/workspace').resolve(), Path.home().resolve())
+    if not any(destination.is_relative_to(root) and destination != root for root in roots):
+        parser.error('目标须在 /workspace 或 HOME 下')
+    if destination.exists() or args.destination.is_symlink():
+        parser.error(f'目标已存在，拒绝覆盖：{destination}')
+    bundle = ROOT / 'share/python-offline' / environment['directory']
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.mkdir()  # 独占创建；只有当前调用创建的目录才能在失败时清理。
+    try:
+        subprocess.run([str(ROOT / 'python/3.11.16/bin/python3.11'), '-m', 'venv', str(destination)], check=True)
+        interpreter = str(destination / 'bin/python')
+        subprocess.run([
+            interpreter, '-m', 'pip', '--isolated', 'install', '--disable-pip-version-check',
+            '--no-index', '--no-cache-dir', '--require-hashes', '--find-links', str(bundle / 'wheels'),
+            '-r', str(bundle / 'requirements.txt'),
+        ], check=True)
+        subprocess.run([interpreter, '-m', 'pip', 'check'], check=True)
+    except BaseException:
+        shutil.rmtree(destination)
+        raise
+    print(f'离线环境已创建：{destination}/bin/python')
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (OSError, subprocess.CalledProcessError) as error:
+        print(f'ctf-python: {error}', file=sys.stderr)
+        sys.exit(1)

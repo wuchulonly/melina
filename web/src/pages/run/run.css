@@ -1,0 +1,52 @@
+.direct-run {
+  display: grid;
+  gap: 20px;
+}
+.direct-run .page-title {
+  overflow-wrap: anywhere;
+}
+.direct-actions,
+.direct-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.direct-tabs {
+  border-bottom: 1px solid var(--line);
+}
+.direct-tabs a {
+  padding: 12px 16px;
+  min-height: 44px;
+}
+.direct-tabs a[aria-current] {
+  border-bottom: 2px solid currentColor;
+  font-weight: 600;
+}
+.direct-routes {
+  display: grid;
+  gap: 16px;
+}
+.direct-route-toggle {
+  text-align: left;
+  min-height: 44px;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.direct-output {
+  max-width: 100%;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.direct-run details summary {
+  cursor: pointer;
+  padding-block: 12px;
+}
+.direct-run textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 88px;
+}

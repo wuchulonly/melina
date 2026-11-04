@@ -1,0 +1,4 @@
+# Complete offline dependencies for CPython 3.11, Linux amd64.
+# Wheels are verified before download and installation.
+pydash==8.1.0 --hash=sha256:61df790f303288df7da3a766c3ca6ea5a8f3ec882b28712bac8d13573dbaba97
+typing-extensions==4.16.0 --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8

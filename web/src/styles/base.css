@@ -1,0 +1,182 @@
+/* 基础样式：重置、正文排版、焦点框。 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scrollbar-color: var(--line-strong) transparent;
+  /* 手机上点一下不闪一块灰底：按下去的样子各个部件自己画 */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 滚动条细一点、颜色跟着线走（Windows、Linux 上默认是一条带箭头的灰槽）；页面里能滚的块（抽屉、代码、浮层）也一样 */
+* {
+  scrollbar-width: thin;
+}
+
+/* 底色是外壳的灰（滚过头、拉动回弹时露出来的也是它）；正文那张纸在 shell.css。窄屏正文铺满，底色换成纸（shell.css） */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--chrome);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern";
+  /* 中文挨着英文、数字时自动留一道细缝（模型写的字常常挤成「用esbuild打包到186ms」）；本来就有空格的不会再加 */
+  text-autospace: normal;
+}
+
+/* 代码、命令、工具输出、输入框照原样排：等宽的对齐别被细缝打乱，正在写的字也别看着和实际的不一样 */
+code,
+kbd,
+samp,
+pre,
+input,
+textarea,
+select,
+.mono,
+.plain-text,
+.inline-code,
+.secret {
+  text-autospace: no-autospace;
+}
+
+/* 段落别在最后一行只剩一两个字 */
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+}
+
+/*
+ * 行文里的粗体和别处的标题一样是 600（字重只用 400、500、600 三档）。浏览器默认的 bolder 是 700：
+ * 中文落到黑体的 Bold、苹方的 Semibold 都一样，西文、数字的 Inter 却真画成 700，同一个词里中文和数字粗细不一样
+ */
+b,
+strong {
+  font-weight: 600;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-s);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* 引号括着的短名字（路线名）：短句折行时整个挪到下一行，不拆成两半（components/ModelText.tsx named） */
+.name-keep {
+  white-space: nowrap;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+ * 系统设置了减少动效：动画和过渡都关掉。要盖过各处组件自己的设置，只能用 !important。
+ * 过渡是 0 s，不是 0.01 ms：transition-property 默认是 all，给每个元素一个不为 0 的时长，任何样式一变都成了一段过渡，
+ * 同一帧里量到的还是旧值。工作台画布的相机改了 sizer 的大小当场就设滚动，减少动效时滚动被旧的大小夹住
+ * （1024 宽点一张卡，浮着的详情栏打开以后那张卡没挪出来， B3 量到的）。页面上没有等 transitionend 的地方
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: 减少动效要盖过组件自己的设置 */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 同上 */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 同上 */
+    transition-duration: 0s !important;
+    /* biome-ignore lint/complexity/noImportantStyles: 同上 */
+    scroll-behavior: auto !important;
+  }
+}

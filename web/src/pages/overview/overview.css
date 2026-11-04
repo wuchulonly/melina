@@ -1,0 +1,676 @@
+/* 总览：页头一排关键数字；最近的任务、系统状态、用量，各占一整行（卡里面再分栏） */
+
+/* ── 关键数字（OverviewPage.tsx Kpis）───────────────────────────────────── */
+
+/* 页头右边：小字名字在上、大数字在下，几项之间一道细竖线；窄了掉到标题下面，两两一排 */
+.kpis {
+  display: flex;
+  margin: 0;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 104px;
+  padding: 0 24px;
+}
+
+.kpi + .kpi {
+  border-left: 1px solid var(--line);
+}
+
+.kpi:last-child {
+  padding-right: 0;
+}
+
+.kpi dt {
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.kpi dd {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.kpi-amber dd {
+  color: var(--amber-strong);
+}
+
+@media (max-width: 640px) {
+  .kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 0;
+    width: 100%;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  .kpi {
+    min-width: 0;
+    padding: 0 0 0 16px;
+  }
+
+  .kpi:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+/* ── 最近的任务 ───────────────────────────────────────────────────────── */
+
+.recent-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.recent {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 4px 14px;
+  padding: 11px 18px;
+  transition: background var(--fast) var(--ease);
+}
+
+.recent + .recent {
+  border-top: 1px solid var(--line);
+}
+
+/* 指上去这一行浅一档（和任务页的行一样） */
+.recent:hover {
+  background: var(--surface-2);
+}
+
+.recent-title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-title:hover {
+  color: var(--accent);
+}
+
+.recent-when {
+  display: inline-flex;
+  gap: 8px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  white-space: nowrap;
+}
+
+.recent-cost {
+  min-width: 52px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  text-align: right;
+}
+
+/* 窄屏：图和目标一行，时间和花费挪到下一行、和目标对齐 */
+@media (max-width: 640px) {
+  .recent {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: 10px 14px;
+  }
+
+  .recent-title {
+    grid-column: 2 / -1;
+    grid-row: 1;
+  }
+
+  .recent-when {
+    grid-column: 2;
+  }
+
+  .recent-cost {
+    min-width: 0;
+  }
+}
+
+/* ── 系统状态 ─────────────────────────────────────────────────────────── */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 18px 20px;
+}
+
+.tile + .tile {
+  border-left: 1px solid var(--line);
+}
+
+.tile-label {
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.tile-value {
+  font-size: var(--fs-headline);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.tile-unit {
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  font-weight: 400;
+}
+
+.tile-sub {
+  color: var(--ink-3);
+  font-size: var(--fs-caption);
+}
+
+.tile .meter {
+  margin: 2px 0;
+}
+
+/*
+ * 本机的格子（SystemStatus.tsx Slots）：一条命令一格，占着的强调色，空着的是同一个色相淡一档（dataviz 的 meter：
+ * 底是同一个色阶浅一档）。以前是一整条 6 px 的满格蓝条，两条命令都在跑时是全页最重的一块色
+ */
+.meter-slots {
+  display: flex;
+  gap: 3px;
+  height: 6px;
+  margin: 2px 0;
+}
+
+.meter-slots > span {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 3px;
+  background: var(--accent-line);
+  opacity: 0.55;
+  transition:
+    background-color var(--medium) var(--ease),
+    opacity var(--medium) var(--ease);
+}
+
+.meter-slots > span[data-on] {
+  background: var(--accent);
+  opacity: 1;
+}
+
+@media (forced-colors: active) {
+  .meter-slots > span {
+    forced-color-adjust: none;
+    background: Canvas;
+    box-shadow: inset 0 0 0 1px CanvasText;
+    opacity: 1;
+  }
+
+  .meter-slots > span[data-on] {
+    background: CanvasText;
+  }
+}
+
+.status-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 16px 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--red-line);
+  border-radius: var(--radius);
+  background: var(--red-soft);
+  color: var(--red);
+  font-size: var(--fs-caption);
+}
+
+.status-alert .icon {
+  margin-top: 2px;
+}
+
+/*
+ * 要你知道的事（SystemStatus.notices）：卡片顶上，一条一行；error 红底、warning 琥珀底。
+ * 几条并成一块：以前一条一个红框、红字，刚装好的 Melina 一打开就是三个叠着的红框（容器引擎、两档没模型），
+ * 比上面的开工清单还响。现在挨着排成一块，相邻的边框叠成一道细线、只有外面四个角是圆的；字用墨色，颜色落在底色、边和图标上
+ */
+.status-notices {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 16px 16px 0;
+  list-style: none;
+}
+
+.status-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+}
+
+.status-notice + .status-notice {
+  margin-top: -1px;
+}
+
+.status-notice:first-child {
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+
+.status-notice:last-child {
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+.status-notice .icon {
+  flex: none;
+  margin-top: 2px;
+}
+
+.status-notice-error {
+  border-color: var(--red-line);
+  background: var(--red-soft);
+}
+
+.status-notice-error .icon {
+  color: var(--red);
+}
+
+.status-notice-warning {
+  border-color: var(--amber-line);
+  background: var(--amber-soft);
+}
+
+.status-notice-warning .icon {
+  color: var(--amber);
+}
+
+.providers {
+  padding: 16px 20px 6px;
+}
+
+.providers-head {
+  margin-bottom: 4px;
+}
+
+/* 供应商两两并排（窄了一家一行）；每家顶上一道线，第一排的那道裁掉 */
+.provider-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  column-gap: 40px;
+  margin-top: -1px;
+  list-style: none;
+  clip-path: inset(1px 0 0);
+}
+
+/* 每家前面一个字母头像，和模型页那家的卡片一个样子 */
+.provider {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.provider > .provider-mark {
+  margin-top: 1px;
+}
+
+.provider-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.provider-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.provider-name {
+  font-weight: 600;
+  font-size: var(--fs-read);
+}
+
+.provider-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 18px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+}
+
+.provider-facts b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.provider-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+}
+
+@media (max-width: 640px) {
+  .tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tile + .tile {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* ── 用量 ─────────────────────────────────────────────────────────────── */
+
+/*
+ * 两行（Usage.tsx）：上面累计花费、token 和每天的柱子，下面按模型、按角色两张表。卡够宽时每行左右两栏、
+ * 中间一道竖线；窄了一格一行、格子之间一道横线。以前左边累计加柱子、右边两张表叠着，右栏高出一倍，左下空一大块
+ */
+.usage {
+  container-type: inline-size;
+}
+
+.usage-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.usage-cell {
+  min-width: 0;
+  padding: 20px 22px 18px;
+}
+
+.usage-row + .usage-row,
+.usage-cell + .usage-cell {
+  border-top: 1px solid var(--line);
+}
+
+@container (min-width: 820px) {
+  /* 两行都是左右各一半，中间那道竖线上下对齐：上面左边累计花费和 token、右边每天的柱子，下面两张表；
+     没有角色用量时，模型表占满一行 */
+  .usage-top,
+  .usage-tables {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .usage-tables.is-single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .usage-cell + .usage-cell {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+}
+
+/* 累计花费和 token：窄的时候左右两块（token 靠右）；宽的时候在左栏里上下两块，都靠左 */
+.usage-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+@container (min-width: 820px) {
+  .usage-summary {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 22px;
+  }
+
+  .usage-summary .usage-tokens {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+.usage-total {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 总览唯一的大数字（累计花费）：比 7 档字号都大，只此一处 */
+.hero {
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.usage-tokens {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.usage-tokens-total {
+  font-size: var(--fs-headline);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.usage-subtitle {
+  margin-bottom: 10px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+}
+
+.usage-tables .usage-subtitle {
+  margin-bottom: 6px;
+}
+
+/* 模型名：供应商那半放淡；放不下时在斜杠后面折行，不截断（截了两个 deepseek 的模型看着一样） */
+.model-cell {
+  overflow-wrap: anywhere;
+}
+
+.model-provider {
+  color: var(--ink-3);
+}
+
+/* 模型那半整块挪到下一行，别在连字符那里断（还是放不下才在里面折） */
+.model-id {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.usage .table .r {
+  white-space: nowrap;
+}
+
+.share-col {
+  width: 22%;
+}
+
+/* 卡很窄（手机）：token 那块跟着左对齐（右对齐时悬在半当中）；占比的条不画了，费用那一列已经说明了谁花得多 */
+@container (max-width: 520px) {
+  .usage-tokens {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+@container (max-width: 460px) {
+  .share-col {
+    display: none;
+  }
+
+  .usage .table th:nth-last-child(2),
+  .usage .table td:nth-last-child(2) {
+    padding-right: 0;
+  }
+}
+
+.share {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--chart-grid);
+  overflow: hidden;
+}
+
+.share > span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--chart-1);
+}
+
+/* ── 每天花费的柱状图 ─────────────────────────────────────────────────── */
+
+.bars {
+  margin: 0;
+  padding-left: 40px;
+}
+
+.bars-plot {
+  position: relative;
+}
+
+.bars-grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px solid var(--chart-grid);
+}
+
+.bars-grid:first-child {
+  border-top-color: var(--line-strong);
+}
+
+.bars-tick {
+  position: absolute;
+  right: calc(100% + 8px);
+  top: -0.7em;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.bars-cols {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.bars-col {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+  display: flex;
+  flex: 1 1 0;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 0;
+  border-radius: var(--radius-s);
+  outline-offset: 0;
+}
+
+.bars-col:focus-visible {
+  outline: 2px solid var(--focus);
+}
+
+.bars-bar {
+  position: relative;
+  width: min(24px, 64%);
+  border-radius: 4px 4px 0 0;
+  background: var(--chart-1);
+  transition: background var(--fast) var(--ease);
+}
+
+.bars-bar[data-active] {
+  background: var(--chart-1-hover);
+}
+
+.bars-value {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.bars-tip {
+  position: absolute;
+  z-index: 5;
+  bottom: calc(100% + 6px);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.bars-tip b {
+  color: var(--ink);
+  font-size: var(--fs-body);
+}
+
+.bars-x {
+  display: flex;
+  margin-top: 6px;
+}
+
+.bars-x > span {
+  flex: 1 1 0;
+  min-width: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  text-align: center;
+  white-space: nowrap;
+}

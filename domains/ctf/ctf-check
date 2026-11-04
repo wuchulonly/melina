@@ -1,0 +1,251 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+trap 'printf "CTF check failed at line %s: %s\n" "$LINENO" "$BASH_COMMAND" >&2' ERR
+
+case "${1:-}" in
+    ''|--quick|--smoke) ;;
+    *) printf 'Usage: %s [--quick|--smoke]\n' "$0" >&2; exit 2 ;;
+esac
+
+# One inventory for image builds, branch diagnostics and hosted startup/export.
+# The absolute /usr/bin/time entry cannot be satisfied by Bash's time keyword.
+check_status=0
+python3 /opt/ctf/check-capabilities.py || check_status=1
+python3 -m pip check || check_status=1
+if [ "$check_status" != 0 ]; then
+    printf 'CTF capability/dependency check failed\n' >&2
+    exit 1
+fi
+if [ "${1:-}" = --quick ]; then
+    printf 'CTF quick check: OK\n'
+    exit 0
+fi
+
+test ! -e /opt/lightcone
+for legacy in lightcone-python lightcone-wordlists lightcone-check-ctf-tools; do
+    if command -v "$legacy" >/dev/null; then
+        printf "Unexpected legacy tool: %s\n" "$legacy" >&2
+        exit 1
+    fi
+done
+test -r /usr/share/wordlists/rockyou.txt
+test -s /usr/share/wordlists/rockyou.txt
+printf 'rockyou       /usr/share/wordlists/rockyou.txt (%s bytes)\n' "$(stat -c %s /usr/share/wordlists/rockyou.txt)"
+ctf-wordlists
+for list in web-small web-common dirsearch rockyou; do
+    list_path=$(ctf-wordlists "$list")
+    test -r "$list_path" && test -s "$list_path"
+done
+
+# Fail early on offline Python / read-only-cwd regressions before slow tool probes.
+bash /opt/ctf/check-offline-python.sh "${1:-}"
+
+check_tmp=$(mktemp -d)
+trap 'rm -rf "$check_tmp"' EXIT
+proxychains -q /usr/bin/true
+proxychains4 -q /usr/bin/true
+socat -V > "$check_tmp/socat.txt" 2>&1
+sed -n '1,2p' "$check_tmp/socat.txt"
+printf 'frpc: '; frpc --version
+printf 'frps: '; frps --version
+printf 'chisel: '; chisel --version
+printf 'sqlmap: '; sqlmap --version
+# Exercise imports and argument parsing through the exact PATH used by branches.
+# Merely finding an executable missed dirsearch's wrong-interpreter failure.
+timeout 30 dirsearch --version > "$check_tmp/dirsearch.txt" 2>&1
+cat "$check_tmp/dirsearch.txt"
+timeout 30 dirsearch --help > "$check_tmp/dirsearch-help.txt" 2>&1
+grep -qi 'usage:' "$check_tmp/dirsearch-help.txt"
+timeout 30 nmap --version > "$check_tmp/nmap.txt"
+timeout 30 nuclei -version > "$check_tmp/nuclei.txt" 2>&1
+timeout 30 nuclei -tl -silent -t /opt/ctf/share/nuclei-templates/ssl > "$check_tmp/nuclei-templates.txt" 2>&1
+python3 - "$check_tmp/nuclei-templates.txt" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path('/opt/ctf/share/nuclei-templates').resolve()
+templates = []
+for line in Path(sys.argv[1]).read_text().splitlines():
+    path = Path(line.strip())
+    path = (path if path.is_absolute() else root / path).resolve()
+    if path.is_relative_to(root / 'ssl') and path.suffix in {'.yaml', '.yml'} and path.is_file():
+        templates.append(path)
+assert templates, 'Nuclei did not list any existing bundled SSL templates'
+PY
+printf "Nuclei bundled templates: OK\n"
+timeout 30 nuclei -validate -t /opt/ctf/share/nuclei-templates/http/custom -duc -ni > "$check_tmp/nuclei-custom.txt" 2>&1
+printf "Nuclei custom templates: OK\n"
+timeout 30 naabu -version > "$check_tmp/naabu.txt" 2>&1
+timeout 30 nikto -Version > "$check_tmp/nikto.txt" 2>&1
+timeout 30 curl --version > "$check_tmp/curl.txt"
+timeout 30 chromium --version > "$check_tmp/chromium.txt" 2>&1
+file --version
+file -b /bin/bash | grep -q ELF
+printf '\000\001\177\377' > "$check_tmp/binary"
+xxd -p "$check_tmp/binary" | xxd -r -p > "$check_tmp/roundtrip"
+cmp "$check_tmp/binary" "$check_tmp/roundtrip"
+php --version > "$check_tmp/php.txt"
+php -r '$data = ["toolchain" => 112]; if (unserialize(serialize($data)) !== $data) { exit(1); } echo "PHP serialization: OK\n";'
+ip -j address show > "$check_tmp/ip-address.json"
+ip -j route show > "$check_tmp/ip-route.json"
+python3 - "$check_tmp" <<'PY'
+import json
+import pathlib
+import sys
+directory = pathlib.Path(sys.argv[1])
+assert any(item["ifname"] == "lo" for item in json.loads((directory / "ip-address.json").read_text()))
+assert isinstance(json.loads((directory / "ip-route.json").read_text()), list)
+print("ip address / route inspection: OK")
+PY
+timeout 10 strace -o "$check_tmp/strace.txt" -e trace=execve /bin/true
+grep -q 'execve(' "$check_tmp/strace.txt"
+printf 'strace child-process tracing: OK\n'
+telnet --version > "$check_tmp/telnet.txt"
+expect -v
+ffuf -V
+timeout 10 flask-unsign --help > "$check_tmp/flask-unsign.txt"
+timeout 10 jdwp-shellifier --help > "$check_tmp/jdwp.txt"
+for tool in bloodyad coercer enum4linux-ng pwncat; do
+    timeout 30 "$tool" --help > "$check_tmp/$tool-help.txt" 2>&1
+done
+timeout 30 netexec --help > "$check_tmp/netexec.txt" 2>&1
+aws --version
+tccli --version
+aliyun version
+playwright-cli --version
+adb version
+gitleaks version
+printf "AD tools / cloud CLIs / browser CLI: OK\n"
+javac -version
+jdb -version
+python3 - <<'PY'
+from importlib.metadata import version
+
+import pwnlib
+import pymongo
+import pymysql
+import MySQLdb
+from MySQLdb import _mysql
+from flask import Flask
+import flask_unsign
+import jwt
+from cryptography.hazmat.primitives.asymmetric import rsa
+
+print("Python analysis imports: OK")
+for package in ("PyMySQL", "mysqlclient", "Flask", "PyJWT", "flask-unsign"):
+    print(f"{package}: {version(package)}")
+print("MySQLdb native client:", _mysql.get_client_info())
+
+# Exercise Flask and Werkzeug together without starting a server or using a DB.
+app = Flask(__name__)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+response = app.test_client().get("/health")
+assert response.status_code == 200 and response.get_json() == {"status": "ok"}
+print("Flask local request: OK")
+
+payload = {"sub": "ctf-toolchain"}
+secret = "melina-ctf-offline-check-secret-32-bytes"
+token = jwt.encode(payload, secret, algorithm="HS256")
+assert jwt.decode(token, secret, algorithms=["HS256"]) == payload
+try:
+    jwt.decode(token, secret + "wrong", algorithms=["HS256"])
+except jwt.InvalidSignatureError:
+    pass
+else:
+    raise AssertionError("JWT accepted an incorrect signing key")
+private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+token = jwt.encode(payload, private_key, algorithm="RS256")
+assert jwt.decode(token, private_key.public_key(), algorithms=["RS256"]) == payload
+print("PyJWT HS256 / RS256 signing and verification: OK")
+
+app.secret_key = secret
+serializer = app.session_interface.get_signing_serializer(app)
+cookie = flask_unsign.sign(payload, secret)
+assert serializer.loads(cookie) == payload
+assert flask_unsign.decode(cookie) == payload
+assert flask_unsign.verify(serializer.dumps(payload), secret)
+assert not flask_unsign.verify(cookie, secret + "wrong")
+print("flask-unsign / Flask cookie interoperability: OK")
+PY
+python3 /opt/ctf/check-supplement.py "${1:-}"
+python3 - <<'PY'
+import errno
+import os
+import pathlib
+import shutil
+import subprocess
+import tempfile
+
+noexec = bool(os.statvfs("/tmp").f_flag & os.ST_NOEXEC)
+print("/tmp mount:", "noexec" if noexec else "executable")
+if os.environ.get("CTF_CHECK_TMP_NOEXEC") == "1":
+    assert noexec, "Runtime verification requires /tmp mounted noexec"
+if noexec:
+    with tempfile.TemporaryDirectory(prefix="ctf-noexec-", dir="/tmp") as directory:
+        binary = pathlib.Path(directory) / "probe"
+        shutil.copyfile("/bin/true", binary)
+        binary.chmod(0o755)
+        try:
+            subprocess.run([str(binary)], check=True)
+        except OSError as error:
+            assert error.errno == errno.EACCES, error
+        else:
+            raise AssertionError("/tmp unexpectedly allowed direct execution")
+        script = pathlib.Path(directory) / "probe.sh"
+        script.write_text("exit 0\n")
+        subprocess.run(["bash", str(script)], check=True)
+    print("/tmp direct execution blocked; interpreter invocation: OK")
+else:
+    print("Executable files may use the workspace or HOME; /tmp is temporary.")
+PY
+test "$(printf 'scale=2; 7 / 2\n' | bc)" = '3.50'
+printf 'bc decimal arithmetic: OK\n'
+printf 'hashcat: '; hashcat --version
+john --list=build-info > "$check_tmp/john.txt"
+sed -n '1p' "$check_tmp/john.txt"
+gdb --version > "$check_tmp/gdb.txt"
+sed -n '1p' "$check_tmp/gdb.txt"
+radare2 -v
+python3 -c 'import angr; from angr import claripy; print("angr:", angr.__version__)'
+grep '^application.version=' /usr/share/ghidra/Ghidra/application.properties
+java -version > "$check_tmp/java.txt" 2>&1
+sed -n '1p' "$check_tmp/java.txt"
+
+# No GPU is exposed by the execution profile. A working CPU backend is required.
+if ! POCL_MAX_PTHREAD_COUNT=2 hashcat -I > "$check_tmp/opencl.txt" 2>&1 \
+    || ! grep -Eq 'Type[. ]*:[[:space:]]*CPU' "$check_tmp/opencl.txt"; then
+    cat "$check_tmp/opencl.txt" >&2
+    printf 'hashcat has no usable CPU backend\n' >&2
+    exit 1
+fi
+printf 'hashcat CPU backend: OK\n'
+
+if [ "${1:-}" = --smoke ]; then
+    # Recover a synthetic, known MD5 offline to catch missing kernels, libraries,
+    # and default-cache failures. No target access is needed.
+    printf 'melina-ctf-toolchain-check\n' > "$check_tmp/words.txt"
+    printf 'melina-ctf-toolchain-check' | md5sum | cut -d ' ' -f 1 > "$check_tmp/hashes.txt"
+    POCL_MAX_PTHREAD_COUNT=2 hashcat -m 0 -a 0 --quiet --potfile-disable --restore-disable \
+        --outfile "$check_tmp/hashcat.txt" --outfile-format 2 \
+        "$check_tmp/hashes.txt" "$check_tmp/words.txt"
+    cmp "$check_tmp/words.txt" "$check_tmp/hashcat.txt"
+    OMP_NUM_THREADS=2 john --format=raw-md5 --wordlist="$check_tmp/words.txt" \
+        --pot="$check_tmp/john.pot" --session="$check_tmp/john" "$check_tmp/hashes.txt" \
+        > "$check_tmp/john-crack.txt" 2>&1
+    grep -Fq ':melina-ctf-toolchain-check' "$check_tmp/john.pot"
+    printf 'hashcat / john offline recovery: OK\n'
+    timeout 30 chromium --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+        --disable-background-networking --disable-component-update --no-first-run \
+        --dump-dom "data:text/html,<title>CTF_BROWSER_OK</title>" \
+        > "$check_tmp/browser.html" 2> "$check_tmp/browser.log"
+    grep -q CTF_BROWSER_OK "$check_tmp/browser.html"
+    printf "Chromium headless page: OK\n"
+    python3 /opt/ctf/check-protocols.py
+    /opt/ctf/check-reversing.sh
+fi
+
+printf 'CTF toolchain: OK\n'

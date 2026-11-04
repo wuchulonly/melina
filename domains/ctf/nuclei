@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/ctf/bin/nuclei -config /opt/ctf/nuclei.yaml -ud /opt/ctf/share/nuclei-templates "$@"

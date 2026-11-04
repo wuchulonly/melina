@@ -1,0 +1,1 @@
+拿不准归哪类的任务：只有常用命令行工具（curl、git、jq、ripgrep、Python 3 等），缺什么自己装。

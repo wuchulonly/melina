@@ -1,0 +1,11 @@
+--- a/jwt_tool.py
++++ b/jwt_tool.py
+@@ -69,7 +69,7 @@
+     ecpubkeyName = path+"/jwttool_custom_public_EC.pem"
+     jwksName = path+"/jwttool_custom_jwks.json"
+     proxyHost = "127.0.0.1"
+-    config = configparser.ConfigParser(allow_no_value=True)
++    config = configparser.ConfigParser(allow_no_value=True, delimiters=('=',))
+     config.optionxform = str
+     config['crypto'] = {'pubkey': pubkeyName,
+         'privkey': privKeyName,

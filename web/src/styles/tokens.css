@@ -1,0 +1,284 @@
+/* Melina 设计令牌。浅色默认，系统深色自动切换，<html data-theme="light|dark"> 可强制指定。 */
+
+:root {
+  color-scheme: light;
+
+  --chrome: #ecefeef5;
+  --bg: #f8faf9;
+  --bg-sunken: #f0f3f2;
+  --surface: #ffffff;
+  --surface-2: #f4f7f6;
+  --surface-hover: #eef2f0;
+  --line: #e2e7e5;
+  --line-strong: #cdd5d2;
+
+  --ink: #141a18;
+  --ink-2: #434d49;
+  --ink-3: #636e6a;
+  --ink-inverse: #ffffff;
+
+  /* 翡翠青绿主强调色 */
+  --accent: #0d746b;
+  --accent-hover: #0a5e56;
+  --accent-soft: #e6f6f4;
+  --accent-line: #b2e2dc;
+  --accent-ink: #0a5c54;
+
+  --amber: #9f4b08;
+  --amber-strong: #c05e0e;
+  --amber-soft: #fdf2e5;
+  --amber-line: #f0d2ab;
+  --on-amber: #ffffff;
+
+  --green: #17754a;
+  --green-soft: #e8f5ed;
+  --green-line: #bde0cb;
+
+  --red: #b02a1c;
+  --red-soft: #fdeeeb;
+  --red-line: #f1c6bf;
+  --on-red: #ffffff;
+
+  --gray-soft: #edf0ef;
+  --gray-line: #d7dddb;
+  --gray-mark: #76807c;
+  --mark-bg-l: 0.955;
+  --mark-bg-c: 0.03;
+  --mark-line-l: 0.9;
+  --mark-ink-l: 0.45;
+  --mark-ink-c: 0.12;
+
+  --primary: #13221f;
+  --primary-hover: #1e332f;
+  --on-primary: #ffffff;
+
+  --focus: #0d746b;
+  --scrim: rgba(14, 20, 18, 0.34);
+
+  --canvas: #f8faf9;
+  --canvas-dot: rgba(13, 116, 107, 0.14);
+  --canvas-dot-sparse: transparent;
+  --card-hard-shadow: rgba(20, 26, 24, 0.07);
+
+  --glass: rgba(248, 250, 249, 0.84);
+  --glass-strong: rgba(255, 255, 255, 0.93);
+
+  --chart-1: #0d746b;
+  --chart-1-hover: #0a5e56;
+  --chart-grid: #e6ebe9;
+
+  --shadow-card: 0 1px 2px rgba(14, 20, 18, 0.04), 0 2px 6px -2px rgba(14, 20, 18, 0.05);
+  --shadow-raised:
+    0 1px 2px rgba(14, 20, 18, 0.05), 0 6px 14px -8px rgba(14, 20, 18, 0.12), 0 20px 40px -24px rgba(14, 20, 18, 0.16);
+  --shadow-pop:
+    0 2px 6px rgba(14, 20, 18, 0.06), 0 14px 28px -10px rgba(14, 20, 18, 0.16), 0 32px 64px -28px rgba(14, 20, 18, 0.24);
+  --shadow-panel:
+    0 0 0 1px rgba(14, 20, 18, 0.055), 0 1px 2px rgba(14, 20, 18, 0.04), 0 8px 28px -18px rgba(14, 20, 18, 0.14);
+  --shadow-btn: 0 1px 2px rgba(14, 20, 18, 0.06);
+  --shadow-btn-primary:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 1px 2px rgba(14, 20, 18, 0.2), 0 2px 6px -2px rgba(14, 20, 18, 0.22);
+  --shadow-btn-pressed: inset 0 1px 2px rgba(14, 20, 18, 0.1);
+  --btn-face: linear-gradient(180deg, #ffffff 40%, #f6f8f7);
+  --btn-face-hover: linear-gradient(180deg, #fbfdfc 40%, #eef2f0);
+  --btn-edge: #c2cbc8;
+  --shadow-inset: inset 0 1px 2px rgba(14, 20, 18, 0.035);
+
+  --shadow-brand: drop-shadow(0 1px 1px rgba(14, 20, 18, 0.2)) drop-shadow(0 3px 5px rgba(14, 20, 18, 0.14));
+
+  --radius-s: 6px;
+  --radius: 8px;
+  --radius-l: 12px;
+  --radius-xl: 16px;
+
+  --fs-label: 12px;
+  --fs-caption: 13px;
+  --fs-body: 14px;
+  --fs-read: 15px;
+  --fs-title: 17px;
+  --fs-headline: 22px;
+  --fs-display: 28px;
+
+  --font-sans:
+    "Melina Sans", system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC",
+    "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "Melina Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, "Liberation Mono",
+    "Noto Sans Mono CJK SC", "PingFang SC", "Microsoft YaHei", monospace;
+  --tracking-tight: -0.012em;
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --fast: 140ms;
+  --medium: 220ms;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --chrome: #0b0f0e;
+  --bg: #111615;
+  --bg-sunken: #0d1211;
+  --surface: #171e1c;
+  --surface-2: #1c2422;
+  --surface-hover: #222c29;
+  --line: #26312e;
+  --line-strong: #354440;
+
+  --ink: #eaf0ee;
+  --ink-2: #b0bcb8;
+  --ink-3: #8c9995;
+  --ink-inverse: #111615;
+
+  --accent: #4fd1c5;
+  --accent-hover: #81e6d9;
+  --accent-soft: #132d2b;
+  --accent-line: #23534e;
+  --accent-ink: #9decf9;
+
+  --amber: #f2a85e;
+  --amber-strong: #e38c36;
+  --amber-soft: #2d2116;
+  --amber-line: #573e25;
+  --on-amber: #1a1206;
+
+  --green: #72cf9b;
+  --green-soft: #15271d;
+  --green-line: #284634;
+
+  --red: #ff8e80;
+  --red-soft: #33191a;
+  --red-line: #5c2b27;
+  --on-red: #1f0b07;
+
+  --gray-soft: #222b29;
+  --gray-line: #35423f;
+  --gray-mark: #798581;
+  --mark-bg-l: 0.29;
+  --mark-bg-c: 0.045;
+  --mark-line-l: 0.36;
+  --mark-ink-l: 0.84;
+  --mark-ink-c: 0.09;
+
+  --primary: #eaf0ee;
+  --primary-hover: #ffffff;
+  --on-primary: #111615;
+
+  --focus: #4fd1c5;
+  --scrim: rgba(0, 0, 0, 0.6);
+
+  --canvas: #111615;
+  --canvas-dot: rgba(79, 209, 197, 0.11);
+  --canvas-dot-sparse: rgba(153, 246, 228, 0.1);
+  --card-hard-shadow: rgba(0, 0, 0, 0.45);
+
+  --glass: rgba(17, 22, 21, 0.82);
+  --glass-strong: rgba(26, 33, 31, 0.92);
+
+  --chart-1: #38b2ac;
+  --chart-1-hover: #4fd1c5;
+  --chart-grid: #26312e;
+
+  --shadow-card:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 1px 2px rgba(0, 0, 0, 0.36), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+  --shadow-raised:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.36), 0 6px 14px -6px rgba(0, 0, 0, 0.45),
+    0 20px 40px -18px rgba(0, 0, 0, 0.6);
+  --shadow-pop: 0 2px 8px rgba(0, 0, 0, 0.4), 0 18px 44px -12px rgba(0, 0, 0, 0.7);
+  --shadow-panel:
+    0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -16px rgba(0, 0, 0, 0.7);
+  --shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 1px rgba(0, 0, 0, 0.35);
+  --shadow-btn-primary: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-btn-pressed: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  --btn-face: linear-gradient(180deg, #222b29, #1b2321);
+  --btn-face-hover: linear-gradient(180deg, #283330, #202927);
+  --btn-edge: #303d3a;
+  --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+
+  --shadow-brand: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --chrome: #0b0f0e;
+    --bg: #111615;
+    --bg-sunken: #0d1211;
+    --surface: #171e1c;
+    --surface-2: #1c2422;
+    --surface-hover: #222c29;
+    --line: #26312e;
+    --line-strong: #354440;
+
+    --ink: #eaf0ee;
+    --ink-2: #b0bcb8;
+    --ink-3: #8c9995;
+    --ink-inverse: #111615;
+
+    --accent: #4fd1c5;
+    --accent-hover: #81e6d9;
+    --accent-soft: #132d2b;
+    --accent-line: #23534e;
+    --accent-ink: #9decf9;
+
+    --amber: #f2a85e;
+    --amber-strong: #e38c36;
+    --amber-soft: #2d2116;
+    --amber-line: #573e25;
+    --on-amber: #1a1206;
+
+    --green: #72cf9b;
+    --green-soft: #15271d;
+    --green-line: #284634;
+
+    --red: #ff8e80;
+    --red-soft: #33191a;
+    --red-line: #5c2b27;
+    --on-red: #1f0b07;
+
+    --gray-soft: #222b29;
+    --gray-line: #35423f;
+    --gray-mark: #798581;
+    --mark-bg-l: 0.29;
+    --mark-bg-c: 0.045;
+    --mark-line-l: 0.36;
+    --mark-ink-l: 0.84;
+    --mark-ink-c: 0.09;
+
+    --primary: #eaf0ee;
+    --primary-hover: #ffffff;
+    --on-primary: #111615;
+
+    --focus: #4fd1c5;
+    --scrim: rgba(0, 0, 0, 0.6);
+
+    --canvas: #111615;
+    --canvas-dot: rgba(79, 209, 197, 0.11);
+    --canvas-dot-sparse: rgba(153, 246, 228, 0.1);
+    --card-hard-shadow: rgba(0, 0, 0, 0.45);
+
+    --glass: rgba(17, 22, 21, 0.82);
+    --glass-strong: rgba(26, 33, 31, 0.92);
+
+    --chart-1: #38b2ac;
+    --chart-1-hover: #4fd1c5;
+    --chart-grid: #26312e;
+
+    --shadow-card:
+      inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 1px 2px rgba(0, 0, 0, 0.36), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+    --shadow-raised:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.36), 0 6px 14px -6px rgba(0, 0, 0, 0.45),
+      0 20px 40px -18px rgba(0, 0, 0, 0.6);
+    --shadow-pop: 0 2px 8px rgba(0, 0, 0, 0.4), 0 18px 44px -12px rgba(0, 0, 0, 0.7);
+    --shadow-panel:
+      0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -16px rgba(0, 0, 0, 0.7);
+    --shadow-btn: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 1px rgba(0, 0, 0, 0.35);
+    --shadow-btn-primary: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.45);
+    --shadow-btn-pressed: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+    --btn-face: linear-gradient(180deg, #222b29, #1b2321);
+    --btn-face-hover: linear-gradient(180deg, #283330, #202927);
+    --btn-edge: #303d3a;
+    --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+
+    --shadow-brand: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+  }
+}

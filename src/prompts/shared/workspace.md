@@ -1,0 +1,4 @@
+- edit、write 操作 workspace；edit 的 old 不带行号。缺工具可在自己的容器里安装。
+- 临时脚本、数据和 token 放容器 /tmp；/workspace 只留需要保留的代码和产物。
+- 外部系统的改动不能靠 workspace 快照恢复；先在 workspace 验证做法，遵守目标里的禁止事项。
+- 对外成批请求先估算次数和耗时、限制并发，能查文档的不硬扫。长任务分批保存进度或用 background，程序须设总期限。

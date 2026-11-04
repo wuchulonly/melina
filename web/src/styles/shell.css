@@ -1,0 +1,355 @@
+/*
+ * 外壳：左侧导航 + 正文。宽屏时侧栏就是浅灰的外壳本身，正文是浮在上面的一张纸（四周留一道缝、圆角、一圈极淡的边），
+ * 眼睛先落在纸上。窄屏时导航变成顶栏，正文铺满。
+ */
+
+.app {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--chrome);
+}
+
+.skip-link {
+  position: absolute;
+  z-index: 100;
+  left: 12px;
+  top: -48px;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--on-primary);
+  transition: top var(--fast) var(--ease);
+}
+
+.skip-link:focus-visible {
+  top: 12px;
+  color: var(--on-primary);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100vh;
+  padding: 20px 12px 16px 14px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  align-self: flex-start;
+  padding: 2px 6px;
+  color: var(--ink);
+}
+
+.brand:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* 图标（assets/melina.svg，和标签页上的是同一张）：墨色圆滑角方块里一顶烫金王冠，方块、金、光都画在图里，
+   深浅主题不换；这里只给大小和落在侧栏上的影子（drop-shadow 跟着圆滑角走，box-shadow 只会是圆角矩形） */
+.brand-mark {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  filter: var(--shadow-brand);
+}
+
+/* 品牌字：无衬线大写、字距放开，像刻在牌匾上的字；以前是宋体，Windows 上落到 SimSun 被硬加粗 */
+.brand-name {
+  font-size: var(--fs-read);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font-weight: 500;
+  transition:
+    background var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.nav-link .icon {
+  color: var(--ink-3);
+  transition: color var(--fast) var(--ease);
+}
+
+.nav-link:hover {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-link:hover .icon {
+  color: var(--ink-2);
+}
+
+/* 当前页：一块白，和正文那张纸是同一种白，像从纸上裁下来的一角；图标是强调色 */
+.nav-link[aria-current="page"] {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 7%, transparent),
+    0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.nav-link[aria-current="page"] .icon {
+  color: var(--accent);
+}
+
+.nav-meta {
+  margin-left: auto;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/*
+ * 侧栏里列出没结束的任务（App.tsx SideRuns）：点一下就回到那块工作台，不用先回任务页找；
+ * 前面的小图形是状态（components/RunGlyph.tsx：蓝圈在跑、灰圈暂停，有事等你的是琥珀色实心问号），标题右边是一共几个
+ */
+.side-runs {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-height: 0;
+}
+
+.side-runs-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 4px;
+  padding: 0 10px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 500;
+}
+
+.side-run {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  transition:
+    background var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.side-run:hover {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.side-run[aria-current="page"] {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* 状态的小图形放在图标那一列的正中（14 px 在 18 px 的一列里），和上面导航的图标对齐 */
+.side-run .glyph {
+  margin-inline: 2px;
+}
+
+.side-runs-count {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.side-run-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.side-runs-more {
+  padding: 4px 10px 0 38px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  padding: 12px 10px 0;
+}
+
+.conn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+/* 正文是浮在外壳上的一张纸。不裁内容（overflow 会让里面吸顶的标签栏失效），滚动的还是整个页面 */
+.main {
+  min-width: 0;
+  min-height: calc(100vh - 16px);
+  margin: 8px 8px 8px 0;
+  border-radius: var(--radius-xl);
+  background: var(--bg);
+  box-shadow: var(--shadow-panel);
+}
+
+/* 换页后焦点放到正文（App.tsx），好让读屏从正文读起；正文本身不是能点的东西，不画焦点框 */
+.main:focus-visible {
+  outline: none;
+}
+
+/* 断线的条在纸的最上面：上面两个角跟着纸圆 */
+.conn-banner {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--amber-line);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: var(--fs-caption);
+}
+
+.confirm {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.confirm-question {
+  margin-right: 2px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+}
+
+@media (max-width: 900px) {
+  /* 顶栏的高：上下各 10 px、导航 36 px、底边 1 px；任务页的标签栏吸在它下面（run.css） */
+  :root {
+    --topbar-h: 57px;
+  }
+
+  body,
+  .app {
+    background: var(--bg);
+  }
+
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    z-index: 30;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    height: auto;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--glass);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    backdrop-filter: saturate(1.4) blur(12px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .brand {
+    align-self: center;
+    padding: 0 6px 0 4px;
+  }
+
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+  }
+
+  .brand-name {
+    font-size: var(--fs-body);
+  }
+
+  /* 窄屏正文铺满，不再浮成一张纸；在跑的任务回任务页看 */
+  .main {
+    min-height: 0;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .conn-banner {
+    border-radius: 0;
+  }
+
+  .side-runs {
+    display: none;
+  }
+
+  .nav {
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .nav-link {
+    height: 36px;
+    padding: 0 10px;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .nav-link .icon,
+  .nav-meta {
+    display: none;
+  }
+
+  .sidebar-foot {
+    display: none;
+  }
+}
+
+/* 320 px 一排放不下品牌字和四个导航：品牌只留图标（链接本身有名字），导航收窄一点 */
+@media (max-width: 380px) {
+  .brand-name {
+    display: none;
+  }
+
+  .nav-link {
+    padding: 0 8px;
+  }
+}

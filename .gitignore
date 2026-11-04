@@ -1,0 +1,33 @@
+node_modules
+dist/
+coverage/
+*.tsbuildinfo
+*.db
+*.db-shm
+*.db-wal
+.env
+.claude/worktrees/
+.claude/settings.local.json
+test-results*/
+playwright-report/
+/artifacts/
+__pycache__/
+*.py[cod]
+
+# Local archives and migration records belong outside the source tree.
+/ctf/archive/
+/ctf/notes/
+/ctf/*manifest*.json
+/ctf/MIGRATION-*.md
+/ctf/versions-*.md
+
+# Local credentials, private competition scheduling and host configuration
+.env.*
+!.env.example
+.claude/
+.codex/
+AGENTS.md
+CLAUDE.md
+/schedulers/
+/deploy/
+/ctf/

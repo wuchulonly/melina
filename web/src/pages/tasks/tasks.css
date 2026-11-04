@@ -1,0 +1,675 @@
+/* 任务页，和新建任务、接着做的弹窗 */
+
+/* ── 弹窗 ─────────────────────────────────────────────────────────────── */
+
+/* 靠上不居中：展开工作目录、加附件时往下长，问句和目标框不跟着上下跳。
+   不裁边：工作目录的补全列表可以伸出弹窗下沿（矮屏、手机上，还有表长得放不下时改成弹窗里滚动，见下面） */
+dialog.new-task-dialog {
+  width: min(680px, calc(100vw - 32px));
+  max-width: none;
+  max-height: none;
+  margin: max(40px, 11vh) auto auto;
+  padding: 0;
+  overflow: visible;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-pop);
+}
+
+dialog.new-task-dialog[open] {
+  animation: new-task-in var(--medium) var(--ease);
+}
+
+/* 后面的页面压暗一点、虚一点，和抽屉一样 */
+dialog.new-task-dialog::backdrop {
+  background: var(--scrim);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+@keyframes new-task-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+}
+
+/* 窗口不算矮、表却长得放不下（NewTaskDialog 量了加 data-scroll）：和矮屏一样限高、在里面滚，
+   不然「开始」掉到屏幕外面；手机上本来就占满整屏，不归这条 */
+@media (min-width: 641px) {
+  dialog.new-task-dialog[data-scroll] {
+    max-height: calc(100dvh - 32px);
+    margin-top: 16px;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+@media (max-height: 640px) {
+  dialog.new-task-dialog {
+    max-height: calc(100dvh - 32px);
+    margin-top: 16px;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* 手机上占满整屏：键盘弹起来时问句、目标框和「开始」都还在上半截 */
+@media (max-width: 640px) {
+  dialog.new-task-dialog {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    border-radius: 0;
+  }
+
+  dialog.new-task-dialog[open] {
+    animation-name: new-task-up;
+  }
+}
+
+@keyframes new-task-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.new-task-notice {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 22px 22px;
+}
+
+/* ── 新建 ─────────────────────────────────────────────────────────────── */
+
+/* 顶上透一层很淡的强调色往下散掉，提示可以开始新任务 */
+.composer {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 22px 18px;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-soft) 70%, transparent), transparent 110px), var(--surface);
+}
+
+/* 拖着文件进来：整张表描一圈虚线，松手就成附件 */
+.composer-drop {
+  outline: 2px dashed var(--accent);
+  outline-offset: -8px;
+}
+
+.composer-loading {
+  min-height: 188px;
+}
+
+.composer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.composer-head > .icon-btn {
+  flex: none;
+  margin: -5px -8px 0 0;
+}
+
+.composer-label {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.5;
+}
+
+.composer-text {
+  width: 100%;
+  min-height: 84px;
+  max-height: 360px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--fs-read);
+  line-height: 1.7;
+  resize: none;
+  field-sizing: content;
+}
+
+.composer-text:focus-visible {
+  outline: none;
+}
+
+.composer-text::placeholder {
+  color: var(--ink-3);
+}
+
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 2px;
+  list-style: none;
+}
+
+.attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: 30px;
+  padding: 0 4px 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+}
+
+.attachment-name {
+  overflow: hidden;
+  max-width: 260px;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-remove {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.composer-dir {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 14px 14px 12px;
+  border-radius: var(--radius-l);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.composer-dir-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.delivery {
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+}
+
+.delivery code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--gray-soft);
+}
+
+/* 离开路径框时查过、没找到这个目录：琥珀色，和「还不能开始」那条提醒一个颜色 */
+.delivery-missing {
+  display: inline-flex;
+  gap: 6px;
+  align-items: flex-start;
+  color: var(--amber);
+}
+
+.delivery-missing .icon {
+  flex: none;
+  margin-top: 3px;
+}
+
+.composer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+/* 目标框没有自己的边框：聚焦时目标框下面那条分隔线换成强调色 */
+.composer:has(.composer-text:focus-visible) .composer-bar {
+  border-top-color: var(--accent);
+}
+
+.composer-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tool,
+.tool-static {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+  transition:
+    background var(--fast) var(--ease),
+    border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.tool:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.tool-on {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.tool .faint {
+  font-size: var(--fs-label);
+}
+
+.tool-static {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-style: dashed;
+}
+
+.composer-go {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.composer-note {
+  margin-top: 10px;
+}
+
+.composer-cancel {
+  margin-top: -8px;
+  padding: 0 22px 18px;
+}
+
+.composer .inline-error {
+  margin-top: 10px;
+}
+
+.continue-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 2px 0 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: var(--fs-body);
+}
+
+.continue-banner > .icon {
+  margin-top: 1px;
+  color: var(--accent);
+}
+
+/* ── 工作目录补全 ─────────────────────────────────────────────────────── */
+
+.dirpicker {
+  position: relative;
+}
+
+.dir-input {
+  position: relative;
+}
+
+.dir-input .input {
+  padding-left: 36px;
+}
+
+.dir-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  color: var(--ink-3);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.dir-option {
+  padding-right: 4px;
+}
+
+/* 目录名照原样排：中英文之间不自动留缝（base.css），和输入框里打的一样 */
+.dir-option-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-autospace: no-autospace;
+}
+
+.dir-dive {
+  width: 28px;
+  height: 28px;
+}
+
+/* ── 列表 ─────────────────────────────────────────────────────────────── */
+
+/* 一个任务都没有：空状态里也放一个「新建任务」 */
+.empty-action {
+  margin-top: 14px;
+}
+
+.group-empty {
+  padding: 4px 0;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  list-style: none;
+  overflow: hidden;
+}
+
+/* 一行三列：状态的小图形（RunGlyph.tsx）、目标和说明、花费和按钮；标题都对齐在图的右边 */
+/*
+ * 屏幕外的行先不排版：结束的任务越攒越多（开发机上跑过八百多个），以前打开任务页每一行都排一遍；
+ * 滚到附近才排，排过的记住高度（auto），滚动条不跳。行里没有画到行外面的东西（「确定吗」是行内的），不会被裁
+ */
+.task {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px 14px;
+  padding: 16px 20px 16px 18px;
+  transition: background var(--fast) var(--ease);
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 120px;
+}
+
+@media print {
+  .task {
+    content-visibility: visible;
+  }
+}
+
+/* 和标题第一行的字对齐（标题 15 px、行高 1.5；中文字的身子比行框的正中略靠上） */
+.task-glyph {
+  margin-top: 2px;
+}
+
+.task + .task {
+  border-top: 1px solid var(--line);
+}
+
+.task:hover {
+  background: var(--surface-2);
+}
+
+.task-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.task-asks:hover {
+  text-decoration: none;
+  filter: brightness(0.97);
+}
+
+.task-title {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: var(--fs-read);
+  font-weight: 500;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.task-title:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/*
+ * 说明那一行：几项之间一枚淡淡的间隔点；「N 件事等你」是琥珀色的小签，总在最前面。
+ * 每一项前面都有间隔点，整行往左挪一枚的宽度、再把左边那一条裁掉：折行时每行开头那枚正好落在裁掉的地方，
+ * 不会有一行以「·」开头（手机上常折行）
+ */
+.task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 0;
+  margin-left: -17px;
+  clip-path: inset(-4px -4px -4px 12px);
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.task-meta > *::before {
+  content: "·";
+  display: inline-block;
+  flex: none;
+  width: 17px;
+  color: var(--line-strong);
+  font-weight: 400;
+  text-align: center;
+}
+
+/* 小签自己有底色，点不画进去；它后面那一项的点只占地方（当小签和下一项之间的缝） */
+.task-meta > .badge {
+  height: 20px;
+  margin-left: 17px;
+}
+
+.task-meta > .badge::before {
+  content: none;
+}
+
+.task-meta > .badge + *::before {
+  color: transparent;
+}
+
+.task-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-side {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  padding-left: 10px;
+}
+
+.task-usage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  font-size: var(--fs-caption);
+  line-height: 1.4;
+}
+
+.task-usage > span:first-child {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--fs-body);
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 已结束的行里「接着做」：平时是灰字，指上去（或键盘进到这一行）才有边框，一列按钮不抢标题的风头 */
+.task-actions .btn {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink-2);
+}
+
+.task:hover .task-actions .btn,
+.task:focus-within .task-actions .btn {
+  border-color: var(--line-strong);
+  border-bottom-color: var(--btn-edge);
+  background-color: var(--surface);
+  background-image: var(--btn-face);
+  box-shadow: var(--shadow-btn);
+  color: var(--ink);
+}
+
+/*
+ * 用鼠标的屏上，「接着做」和删除平时不露，指到这一行（或键盘进到这一行）才浮出来：
+ * 已结束的任务一多，每行右边一模一样的一对按钮排成两列，比标题还显眼。位置照样占着，出来时不挤动别的字。
+ * 手机、平板没有「指上去」，照旧一直露着
+ */
+@media (hover: hover) and (pointer: fine) {
+  .task-actions {
+    opacity: 0;
+    transition: opacity var(--fast) var(--ease);
+  }
+
+  .task:hover .task-actions,
+  .task:focus-within .task-actions {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .task {
+    grid-template-columns: 16px minmax(0, 1fr);
+    padding: 14px 16px;
+  }
+
+  .task-side {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 0;
+  }
+
+  .task-usage {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .composer-kbd {
+    display: none;
+  }
+}
+
+/* 没配好模型时，问句下面先说一句（lib/setup.ts） */
+.composer-setup {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 2px 0 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--amber-line);
+  border-radius: var(--radius);
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+}
+
+.composer-setup .icon {
+  flex: none;
+  margin-top: 2px;
+}
+
+.composer-setup a {
+  margin-left: 6px;
+}
+
+/* 容器、镜像的问题照抄 Melina 那句话：一条一行，字比上面那句淡一档，不和「还不能开始」挤成一段 */
+.composer-setup-why {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-2);
+}
+
+/* 已结束的任务：一句结果（RunListItem.outcome），按天分组，多了能搜能筛 */
+.task-outcome {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 2px 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+
+.task-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-search {
+  width: 220px;
+  max-width: 100%;
+  height: 32px;
+}
+
+.task-day + .task-day {
+  margin-top: 16px;
+}
+
+.task-day-title {
+  margin: 0 0 6px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+
+@media (max-width: 560px) {
+  .task-tools,
+  .task-search {
+    width: 100%;
+  }
+}

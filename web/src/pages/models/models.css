@@ -1,0 +1,612 @@
+/* 模型页 */
+
+.models-callout {
+  margin-bottom: 28px;
+}
+
+.provider-card {
+  padding: 16px 20px 18px;
+}
+
+.provider-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+/* 左上角：字母头像（ModelsPage.tsx ProviderMark）在左，名字和接口在右 */
+.provider-card-id {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* 卡片标题：目录里的名字（DeepSeek），下面一行淡淡地写 id 和接口域名；没有名字的（目录里没有）标题就是 id，用等宽 */
+.provider-card-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.provider-card-name {
+  font-size: var(--fs-read);
+  font-weight: 600;
+}
+
+.provider-card-cn {
+  color: var(--ink-3);
+  font-size: var(--fs-caption);
+}
+
+.provider-card-sub {
+  overflow-wrap: anywhere;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.provider-card-sub .mono {
+  font-size: inherit;
+}
+
+/* 选择面板里的一项：名字、中文名，已经加了的打勾 */
+.pick-name {
+  overflow: hidden;
+  color: var(--ink);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-option-off .pick-name {
+  color: var(--ink-3);
+}
+
+.pick-cn {
+  flex: none;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 400;
+}
+
+.pick-added {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--green);
+}
+
+.picker-foot-action {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+
+/* 「加一家供应商」：放进选择面板以后还是一整行宽 */
+.picker > .add-row {
+  width: 100%;
+}
+
+/* 加模型面板右边的价格：每百万 token 输入 / 输出 */
+.pick-price {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── 自定义供应商：名字、接口格式、地址、模型表 ───────────────────── */
+
+.custom-form {
+  gap: 16px;
+}
+
+.custom-form-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.custom-form-title {
+  font-size: var(--fs-read);
+  font-weight: 600;
+}
+
+.custom-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.custom-row-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+}
+
+.custom-set {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.custom-set .radio-row {
+  align-self: flex-start;
+}
+
+/* 地址换了域名、端口或协议：存过的 key 保存时作废，和下面「还要注意的」一个颜色 */
+.field-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--amber);
+  font-size: var(--fs-caption);
+}
+
+.field-warn .icon {
+  flex: none;
+  margin-top: 3px;
+}
+
+/* 模型表：一行一个模型，外面一个框、里面细线分隔（和 key 列表一个样子） */
+.custom-models {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.custom-model {
+  display: grid;
+  grid-template-columns: minmax(0, 2.6fr) repeat(4, minmax(0, 1fr)) 56px 32px;
+  gap: 6px 8px;
+  align-items: center;
+  padding: 8px 10px;
+}
+
+.custom-model + .custom-model {
+  border-top: 1px solid var(--line);
+}
+
+.custom-model-head {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--surface-2);
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.custom-model .input {
+  height: 32px;
+  padding: 0 8px;
+  font-size: var(--fs-caption);
+}
+
+/* 数字框外面的 label：桌面上有表头，框上面的短名字不写；手机上没有表头，写出来 */
+.custom-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.custom-cell-label {
+  display: none;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.custom-model-reasoning {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+  cursor: pointer;
+}
+
+.custom-model-reasoning input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+/* 桌面上表头写着「思考型」，勾选框旁边不再重复 */
+.custom-model-reasoning-text {
+  display: none;
+}
+
+.custom-models-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-top: 6px;
+}
+
+.custom-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.custom-summary .custom-fields {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+@media (max-width: 860px) {
+  .custom-row-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .custom-model-head {
+    display: none;
+  }
+
+  /* 手机上一个模型占四行：模型名和去掉按钮、上下文和最长输出、两个价格、思考型 */
+  .custom-model {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 32px;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .custom-model > :nth-child(1) {
+    grid-row: 1;
+    grid-column: 1 / 3;
+  }
+
+  .custom-model > :nth-child(7) {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .custom-model > :nth-child(2),
+  .custom-model > :nth-child(4) {
+    grid-column: 1;
+  }
+
+  .custom-model > :nth-child(3),
+  .custom-model > :nth-child(5) {
+    grid-column: 2;
+  }
+
+  .custom-model > :nth-child(2),
+  .custom-model > :nth-child(3) {
+    grid-row: 2;
+  }
+
+  .custom-model > :nth-child(4),
+  .custom-model > :nth-child(5) {
+    grid-row: 3;
+  }
+
+  .custom-model > :nth-child(6) {
+    grid-row: 4;
+    grid-column: 1 / 3;
+    justify-content: flex-start;
+  }
+
+  .custom-cell-label,
+  .custom-model-reasoning-text {
+    display: inline;
+  }
+
+  /* 表头藏起来了：第一个模型顶上不再画分隔线（不然和外框叠成两道） */
+  .custom-model-head + .custom-model {
+    border-top: 0;
+  }
+}
+
+/* 左边的标签和右边第一行字对齐（以前垂直居中：两个 key 时「API key」悬在两行中间） */
+.provider-card-body {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px 16px;
+  margin-top: 14px;
+}
+
+/* 手机上标签放到内容上面，右边那栏不用挤在 230 px 里 */
+@media (max-width: 640px) {
+  .provider-card-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .provider-card-body > .field-label:not(:first-child) {
+    margin-top: 10px;
+  }
+}
+
+.provider-card .key-edit {
+  max-width: 520px;
+}
+
+.limits-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-height: 30px;
+}
+
+.limits-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 200px));
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+
+.provider-live {
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+}
+
+.add-actions {
+  gap: 6px;
+}
+
+/* ── 一家的几个 API key ─────────────────────────────────────────── */
+
+.key-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* 几个 key 是一组：外面一个框，里面细线分隔（以前每个 key 一个框，卡里套框） */
+.key-rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  list-style: none;
+}
+
+.key-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 12px;
+}
+
+.key-row + .key-row {
+  border-top: 1px solid var(--line);
+}
+
+.key-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+}
+
+.key-rank {
+  color: var(--ink-3);
+  font-size: var(--fs-caption);
+  min-width: 1ch;
+}
+
+.key-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.key-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.key-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.key-why {
+  color: var(--red);
+}
+
+/* 「现在就试」接在那句话后面，用强调色，不跟着变红，也不把这一行撑高 */
+.key-why .key-retry {
+  height: 24px;
+  margin-left: 6px;
+  padding: 0 8px;
+  color: var(--accent);
+  vertical-align: middle;
+}
+
+.provider-card .key-row .key-edit {
+  display: grid;
+  grid-template-columns: minmax(0, 180px) minmax(0, 1fr) auto;
+  gap: 6px 8px;
+  align-items: center;
+  max-width: none;
+}
+
+.key-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+@media (max-width: 640px) {
+  .provider-card .key-row .key-edit {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── 分档 ─────────────────────────────────────────────────────────────── */
+
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tier {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 18px 16px;
+}
+
+.tier-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.tier-title {
+  font-size: var(--fs-read);
+  font-weight: 600;
+}
+
+.tier-empty {
+  padding: 12px 0;
+}
+
+.tier-list {
+  list-style: none;
+  counter-reset: none;
+}
+
+.tier-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.tier-item + .tier-item {
+  border-top: 1px solid var(--line);
+}
+
+.tier-rank {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gray-soft);
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+
+.tier-item:first-child .tier-rank {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.tier-model {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tier-model > .mono {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tier-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.tag-warn {
+  border-color: var(--amber-line);
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.tier-actions {
+  display: flex;
+  flex: none;
+  gap: 0;
+}
+
+.tier-actions .icon-btn {
+  width: 30px;
+  height: 30px;
+}
+
+.tier-actions .icon-btn:disabled {
+  opacity: 0.3;
+}
+
+/* 加模型：卡片底下一个轻按钮，点开的面板和卡片一样宽 */
+.tier-add {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
+.tier-add-btn {
+  margin-left: -6px;
+}
+
+.problems {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 28px;
+  list-style: none;
+}
+
+.problem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--amber);
+  font-size: var(--fs-caption);
+}
+
+.problem .icon {
+  margin-top: 3px;
+}
+
+.problem-error {
+  color: var(--red);
+}
+
+@media (max-width: 860px) {
+  .tiers {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .limits-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

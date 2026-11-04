@@ -1,0 +1,142 @@
+/* Markdown 正文（交付的文档、知识报告）：读起来舒服的长文排版。 */
+
+/* contain: paint：文档里的东西（比如 KaTeX 的 \raisebox）画不到文档框外面，盖不住 Melina 自己的界面 */
+.md {
+  color: var(--ink);
+  font-size: var(--fs-read);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  contain: paint;
+}
+
+.md > :first-child {
+  margin-top: 0;
+}
+
+.md > :last-child {
+  margin-bottom: 0;
+}
+
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  margin: 1.6em 0 0.6em;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.md h1 {
+  font-size: 1.75em;
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+}
+
+.md h2 {
+  font-size: 1.35em;
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--line);
+}
+
+.md h3 {
+  font-size: 1.12em;
+}
+
+.md p,
+.md ul,
+.md ol,
+.md blockquote,
+.md pre,
+.md table,
+.md .math-block {
+  margin: 0 0 1em;
+}
+
+.md ul,
+.md ol {
+  padding-left: 1.5em;
+}
+
+.md li + li {
+  margin-top: 0.25em;
+}
+
+.md blockquote {
+  padding: 0.2em 1em;
+  border-left: 3px solid var(--line-strong);
+  color: var(--ink-2);
+}
+
+.md code {
+  padding: 0.12em 0.4em;
+  border-radius: 4px;
+  background: var(--gray-soft);
+  font-size: 0.88em;
+}
+
+.md pre {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+.md pre code {
+  padding: 0;
+  background: none;
+  font-size: var(--fs-caption);
+}
+
+.md table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.94em;
+}
+
+.md th,
+.md td {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+}
+
+.md th {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+.md hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.md a {
+  text-decoration: underline;
+  text-decoration-color: var(--accent-line);
+  text-underline-offset: 3px;
+}
+
+.md .md-image {
+  color: var(--ink-2);
+}
+
+.md .math-block {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}
+
+.md .katex {
+  font-size: 1.08em;
+}
+
+.md .math-error {
+  color: var(--red);
+}

@@ -1,0 +1,2 @@
+# Unified patches need the single space on empty context lines.
+domains/ctf/*.patch -whitespace

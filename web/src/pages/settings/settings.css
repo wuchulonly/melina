@@ -1,0 +1,194 @@
+/* 设置页 */
+
+/*
+ * 凭证的提醒：白底细线的卡，钥匙放进一块琥珀色的小方块。以前整块琥珀底加琥珀边，
+ * 页面上最重的一块是一句提醒，比下面的凭证还抢眼；琥珀色只留一小块，提醒的意思还在
+ */
+.cred-warning {
+  margin-bottom: 14px;
+}
+
+.cred-warning.callout-amber {
+  border-color: var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  color: var(--ink-2);
+}
+
+.cred-warning .callout-icon {
+  box-sizing: content-box;
+  flex: none;
+  margin-top: 0;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--amber-soft);
+  color: var(--amber-strong);
+}
+
+.cred-warning .callout-title {
+  color: var(--ink);
+}
+
+.cred-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cred-empty {
+  padding: 4px 2px 6px;
+}
+
+.cred {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 14px 18px;
+}
+
+.cred-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cred-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-read);
+  font-weight: 600;
+}
+
+.cred-delivery {
+  color: var(--ink-2);
+  font-size: var(--fs-caption);
+}
+
+.cred-delivery code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--gray-soft);
+  color: var(--ink);
+}
+
+/* 改给法：接在「以环境变量 X 给容器」后面的一个小按钮，不把这一行撑高；给不进容器的那条红字写在下面 */
+.cred-delivery .cred-move {
+  height: 24px;
+  margin-left: 6px;
+  padding: 0 8px;
+  color: var(--accent);
+  vertical-align: middle;
+}
+
+.cred-issue {
+  max-width: 62ch;
+  margin: 4px 0 0;
+  color: var(--red);
+}
+
+.cred-move-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.cred-side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cred-side .key-edit {
+  align-items: flex-start;
+  width: 380px;
+  max-width: 100%;
+}
+
+/* 凭证的值：多行 textarea（证书、kubeconfig 有换行），默认把字遮成圆点，「显示」切换 */
+.secret {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.secret-value {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 10px;
+  font-size: var(--fs-caption);
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.secret-masked {
+  -webkit-text-security: disc;
+}
+
+.secret-toggle {
+  flex: none;
+  margin-top: 3px;
+}
+
+.cred-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.cred-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.cred-fieldset legend {
+  padding: 0;
+  margin-bottom: 6px;
+}
+
+.cred-target {
+  flex: 1 1 220px;
+  width: auto;
+}
+
+.notify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notify-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* 铃铛放进一块灰的小方块，和上面凭证提醒的钥匙一个样子 */
+.notify-icon {
+  box-sizing: content-box;
+  flex: none;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--gray-soft);
+  color: var(--ink-2);
+}
+
+.notify-label {
+  font-weight: 500;
+}
+
+.notify-allow {
+  margin-top: 8px;
+}

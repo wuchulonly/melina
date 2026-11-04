@@ -1,0 +1,26 @@
+/* !
+随页面带的两个西文字体（assets/fonts，许可证 SIL OFL 1.1，原文在同一个目录）：
+Inter 4.001（The Inter Project Authors，https://github.com/rsms/inter）、
+JetBrains Mono 2.211（The JetBrains Mono Project Authors，https://github.com/JetBrains/JetBrainsMono）。 */
+
+@font-face {
+  font-family: "Melina Sans";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: fallback;
+  src: url("../assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-2013,
+    U+2015-2017, U+201A-201B, U+201E-2025, U+2027-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Melina Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: fallback;
+  src: url("../assets/fonts/jetbrains-mono-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-2013,
+    U+2015-2017, U+201A-201B, U+201E-2025, U+2027-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

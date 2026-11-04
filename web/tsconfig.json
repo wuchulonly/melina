@@ -1,0 +1,28 @@
+{
+  // 页面代码（src/）：浏览器里跑，由 Vite 打包。
+  // 只 import src/core 的类型（import type），不 import 它的值：值会把 typebox 和全部 schema 带进页面。
+  // core 的类型会顺着 ids.ts 引到 node:crypto，所以 types 里带上 node；页面代码自己不用 Node 的 API。
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["es2024", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": ["vite/client", "node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src"]
+}

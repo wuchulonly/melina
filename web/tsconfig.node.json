@@ -1,0 +1,38 @@
+{
+  // Node 里跑的部分：假后端（fake/）、开发时起演示模式 Melina 的插件（dev/）、Playwright 测试（e2e/ 对假后端，e2e-melina/ 对真 Melina）、
+  // 单元测试（test/）和几个配置文件。
+  // 和根目录的 tsconfig 用同一套严格选项；假后端直接 import 测试剧本（test/fixtures/runs）和 src/core。
+  "compilerOptions": {
+    "target": "es2024",
+    "lib": ["es2024", "dom", "dom.iterable"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "jsx": "react-jsx",
+    "types": ["node", "vite/client"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": [
+    "fake",
+    "dev",
+    "e2e",
+    "e2e-melina",
+    "test",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "playwright.melina.config.ts"
+  ]
+}

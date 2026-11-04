@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "architecture": "linux/amd64",
+  "sourceImage": "sha256:11879d27395fad2c14f5628222f776be1074840fdcdcfbadd2869ac2e458c5e0",
+  "kaliBase": "docker.io/kalilinux/kali-rolling@sha256:ed99295a386abde2fb31e01a441b7c2800d9bcf19a20028b77d642c3ef068363",
+  "jdwpRevision": "30471c2ac7da5fb5f3fd197cd26cd8089f4d74e8",
+  "python": "3.11.16",
+  "supplement": {
+    "date": "2026-10-12",
+    "omittedTools": ["sage"],
+    "jwtToolRevision": "3bc7407cf2222d6a821dcc19c776e5a1b1cb9a9b",
+    "playwrightVersion": "1.63.0"
+  },
+  "refresh": {
+    "date": "2026-10-14",
+    "toolLock": "toolchain.lock.json",
+    "pythonUpdates": {
+      "angr": "10.0.4.post1",
+      "angr-data": "0.2.0",
+      "archinfo": "10.0.4",
+      "cle": "10.0.4",
+      "pyvex": "10.0.4",
+      "pycryptodome": "4.0.0",
+      "PyJWT": "2.15.1",
+      "playwright": "1.64.0",
+      "pyee": "14.0.0"
+    },
+    "playwrightCli": "0.1.22",
+    "hintPolicy": "disabled by default in competition scheduler"
+  }
+}

@@ -1,0 +1,15 @@
+<melina-watch>
+WORKING_MODEL:
+- 第 1 条还差 19 个百分点，第 2 条有观测证明
+EVIDENCE:
+- 给 search.ts 补测试（在试）：补了 3 条，61% → 70%
+DECISION:
+- 先看清是哪些文件没覆盖到
+NEXT_CHECKS:
+- 给 utils.ts 补测试
+OPEN_QUESTIONS:
+- 给 search.ts 补测试：大输入没测
+CONFLICTS:
+- 报告说 70%
+- 日志里是 68%
+</melina-watch>

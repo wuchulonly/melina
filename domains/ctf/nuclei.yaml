@@ -1,0 +1,3 @@
+disable-update-check: true
+templates:
+  - /opt/ctf/share/nuclei-templates

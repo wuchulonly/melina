@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-14T19:39:36.532168+00:00",
+  "architecture": "linux/amd64",
+  "tools": {
+    "nuclei": {
+      "version": "v3.11.1",
+      "source": "https://github.com/projectdiscovery/nuclei/releases/tag/v3.11.1",
+      "published_at": "2026-08-08T12:21:32Z",
+      "url": "https://github.com/projectdiscovery/nuclei/releases/download/v3.11.1/nuclei_3.11.1_linux_amd64.zip",
+      "sha256": "ea63d4ae232808cd7c6bc00d0142428e231fab59dae01042246097d195835ab6",
+      "archive": "nuclei_3.11.1_linux_amd64.zip",
+      "binaries": ["nuclei"]
+    },
+    "naabu": {
+      "version": "v2.6.1",
+      "source": "https://github.com/projectdiscovery/naabu/releases/tag/v2.6.1",
+      "published_at": "2026-05-05T15:33:05Z",
+      "url": "https://github.com/projectdiscovery/naabu/releases/download/v2.6.1/naabu_2.6.1_linux_amd64.zip",
+      "sha256": "018c4c9884dea971eda860435ede3021d1150732f34cfd245498c6726d8cab90",
+      "archive": "naabu_2.6.1_linux_amd64.zip",
+      "binaries": ["naabu"]
+    },
+    "subfinder": {
+      "version": "v2.17.0",
+      "source": "https://github.com/projectdiscovery/subfinder/releases/tag/v2.17.0",
+      "published_at": "2026-10-08T07:09:35Z",
+      "url": "https://github.com/projectdiscovery/subfinder/releases/download/v2.17.0/subfinder_2.17.0_linux_amd64.zip",
+      "sha256": "a39c3e5c7a26ef3c430915c4d6cbf7716a00f26769a75e9405aba796142eba37",
+      "archive": "subfinder_2.17.0_linux_amd64.zip",
+      "binaries": ["subfinder"]
+    },
+    "katana": {
+      "version": "v1.8.0",
+      "source": "https://github.com/projectdiscovery/katana/releases/tag/v1.8.0",
+      "published_at": "2026-10-05T13:28:18Z",
+      "url": "https://github.com/projectdiscovery/katana/releases/download/v1.8.0/katana_1.8.0_linux_amd64.zip",
+      "sha256": "cb027ae99d0757061b70c07a15c7a80f62c5a535ab52c4a329f80c4b0a7309d2",
+      "archive": "katana_1.8.0_linux_amd64.zip",
+      "binaries": ["katana"]
+    },
+    "httpx": {
+      "version": "v1.12.0",
+      "source": "https://github.com/projectdiscovery/httpx/releases/tag/v1.12.0",
+      "published_at": "2026-09-08T13:36:33Z",
+      "url": "https://github.com/projectdiscovery/httpx/releases/download/v1.12.0/httpx_1.12.0_linux_amd64.zip",
+      "sha256": "9d8439e8b6c9aa7d1e2314817a392e00d5178da3af5652f7475f88868f418f76",
+      "archive": "httpx_1.12.0_linux_amd64.zip",
+      "binaries": ["httpx"]
+    },
+    "ffuf": {
+      "version": "v2.3.0",
+      "source": "https://github.com/ffuf/ffuf/releases/tag/v2.3.0",
+      "published_at": "2026-09-09T19:16:19Z",
+      "url": "https://github.com/ffuf/ffuf/releases/download/v2.3.0/ffuf_2.3.0_linux_amd64.tar.gz",
+      "sha256": "b2a3c725fcb9da175159682f54d6e9149f2905b00d84d155e7efc5d599975ceb",
+      "archive": "ffuf_2.3.0_linux_amd64.tar.gz",
+      "binaries": ["ffuf"]
+    },
+    "gobuster": {
+      "version": "v3.8.2",
+      "source": "https://github.com/OJ/gobuster/releases/tag/v3.8.2",
+      "published_at": "2025-09-04T08:22:47Z",
+      "url": "https://github.com/OJ/gobuster/releases/download/v3.8.2/gobuster_Linux_x86_64.tar.gz",
+      "sha256": "c8a8c6a966eeb011d682a0ef2305a3e3a86b8b3fabe744350c00a766cc0f8021",
+      "archive": "gobuster_Linux_x86_64.tar.gz",
+      "binaries": ["gobuster"]
+    },
+    "feroxbuster": {
+      "version": "v2.13.1",
+      "source": "https://github.com/epi052/feroxbuster/releases/tag/v2.13.1",
+      "published_at": "2025-12-13T14:11:09Z",
+      "url": "https://github.com/epi052/feroxbuster/releases/download/v2.13.1/x86_64-linux-feroxbuster.tar.gz",
+      "sha256": "7985c00e6803b0f25d5e9139f7472279f3f4d891429627a5cedc629e53992d80",
+      "archive": "x86_64-linux-feroxbuster.tar.gz",
+      "binaries": ["feroxbuster"]
+    },
+    "frp": {
+      "version": "v0.71.1",
+      "source": "https://github.com/fatedier/frp/releases/tag/v0.71.1",
+      "published_at": "2026-10-14T09:52:45Z",
+      "url": "https://github.com/fatedier/frp/releases/download/v0.71.1/frp_0.71.1_linux_amd64.tar.gz",
+      "sha256": "1d9875210972a5d1a62b2dc4c48df45ab0af05d3ca1b5e494a014428259df803",
+      "archive": "frp_0.71.1_linux_amd64.tar.gz",
+      "binaries": ["frpc", "frps"]
+    },
+    "gitleaks": {
+      "version": "v8.30.1",
+      "source": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1",
+      "published_at": "2026-03-21T02:17:58Z",
+      "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz",
+      "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+      "archive": "gitleaks_8.30.1_linux_x64.tar.gz",
+      "binaries": ["gitleaks"]
+    },
+    "dalfox": {
+      "version": "v3.2.4",
+      "source": "https://github.com/hahwul/dalfox/releases/tag/v3.2.4",
+      "published_at": "2026-10-07T14:21:42Z",
+      "url": "https://github.com/hahwul/dalfox/releases/download/v3.2.4/dalfox-v3.2.4-linux-x86_64.tar.gz",
+      "sha256": "aaef3f3d26d2de6d4e61ef5295151d9de36e111981618136ac7ec54b578582b8",
+      "archive": "dalfox-v3.2.4-linux-x86_64.tar.gz",
+      "binaries": ["dalfox"]
+    },
+    "ripgrep": {
+      "version": "15.2.0",
+      "source": "https://github.com/BurntSushi/ripgrep/releases/tag/15.2.0",
+      "published_at": "2026-07-15T16:26:10Z",
+      "url": "https://github.com/BurntSushi/ripgrep/releases/download/15.2.0/ripgrep-15.2.0-x86_64-unknown-linux-musl.tar.gz",
+      "sha256": "33e15bcf1624b25cdd2a55813a47a2f95dbe126268203e76aa6a585d1e7b149c",
+      "archive": "ripgrep-15.2.0-x86_64-unknown-linux-musl.tar.gz",
+      "binaries": ["rg"]
+    },
+    "fd": {
+      "version": "v10.5.0",
+      "source": "https://github.com/sharkdp/fd/releases/tag/v10.5.0",
+      "published_at": "2026-08-26T07:59:09Z",
+      "url": "https://github.com/sharkdp/fd/releases/download/v10.5.0/fd-v10.5.0-x86_64-unknown-linux-gnu.tar.gz",
+      "sha256": "a1259cd129636efbc3fef123525c1b49e88fe5088c012630983c310e52fdfa95",
+      "archive": "fd-v10.5.0-x86_64-unknown-linux-gnu.tar.gz",
+      "binaries": ["fd"]
+    },
+    "radare2": {
+      "version": "6.2.4",
+      "source": "https://github.com/radareorg/radare2/releases/tag/6.2.4",
+      "published_at": "2026-10-05T19:52:50Z",
+      "url": "https://github.com/radareorg/radare2/releases/download/6.2.4/radare2_6.2.4_amd64.deb",
+      "sha256": "7019eedc0e0e87d1f53d6b8f5fc62b898567679c5efdce7fbfc557c9e7655e90",
+      "archive": "radare2_6.2.4_amd64.deb",
+      "binaries": []
+    },
+    "aliyun": {
+      "version": "v3.5.1",
+      "source": "https://github.com/aliyun/aliyun-cli/releases/tag/v3.5.1",
+      "archive": "aliyun-cli-linux-3.5.1-amd64.tgz",
+      "url": "https://github.com/aliyun/aliyun-cli/releases/download/v3.5.1/aliyun-cli-linux-3.5.1-amd64.tgz",
+      "sha256": "3a9a45b9c7899228074135612d2b7ebbf32abb97826d825787cb454cd3011bdc",
+      "binaries": ["aliyun"]
+    },
+    "ghidra": {
+      "version": "Ghidra_12.1.4_build",
+      "source": "https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.4_build",
+      "published_at": "2026-09-21T17:38:59Z",
+      "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.4_build/ghidra_12.1.4_PUBLIC_20260921.zip",
+      "sha256": "ddac49f903da9d5bac833e5cc79395098b9c33cfd3279be5f31bd00387d2d4db",
+      "archive": "ghidra_12.1.4_PUBLIC_20260921.zip",
+      "binaries": []
+    },
+    "go": {
+      "version": "go1.27.2",
+      "source": "https://go.dev/dl/",
+      "archive": "go1.27.2.linux-amd64.tar.gz",
+      "url": "https://go.dev/dl/go1.27.2.linux-amd64.tar.gz",
+      "sha256": "ecbadb99091a3f46e31f5f934b068b1864eafa7995211b39eaddf76996045fe5",
+      "binaries": []
+    }
+  },
+  "playwright_cli": "0.1.22",
+  "sources": {
+    "sqlmap": {
+      "version": "1.10.10",
+      "revision": "65b6e7b4acb13a736614a1ab73b0908476f3c24a",
+      "archive": "sqlmap-65b6e7b4acb13a736614a1ab73b0908476f3c24a.tar.gz",
+      "url": "https://codeload.github.com/sqlmapproject/sqlmap/tar.gz/65b6e7b4acb13a736614a1ab73b0908476f3c24a",
+      "sha256": "743f1a9ea52f933486a3cb4c4f8c97d4957ad894337e299e387065bd87c5f584"
+    },
+    "nuclei-templates": {
+      "version": "v10.5.0",
+      "archive": "nuclei-templates-v10.5.0.tar.gz",
+      "url": "https://codeload.github.com/projectdiscovery/nuclei-templates/tar.gz/refs/tags/v10.5.0",
+      "sha256": "80fbabceca095fac40afecc7f023748df22b9576b9ff10a4422bd2fbf81f9a41"
+    },
+    "nmap": {
+      "version": "7.991",
+      "archive": "nmap-7.991.tar.bz2",
+      "url": "https://nmap.org/dist/nmap-7.991.tar.bz2",
+      "source": "https://nmap.org/download.html",
+      "sha256": "a5d507f29437bef3bedd4771ff9aaa8fc1c2a109ddba1f5b1cf12027456929be"
+    }
+  }
+}

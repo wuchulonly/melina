@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Java's user.home does not follow HOME. Its native library cache also needs
+# executable storage, so keep it in the Runtime's HOME bind mount, not /tmp.
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+ghidra_tmp="$XDG_CACHE_HOME/ghidra/tmp"
+mkdir -p "$XDG_CONFIG_HOME" "$ghidra_tmp"
+export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:+$JAVA_TOOL_OPTIONS }-Duser.home=\"$HOME\" -Djava.io.tmpdir=\"$ghidra_tmp\""
+exec /usr/share/ghidra/support/analyzeHeadless "$@"
